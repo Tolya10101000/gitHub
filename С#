@@ -1,0 +1,118 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using OpenQA.Selenium;
+
+
+namespace WindowsFormsApp1
+{
+    public partial class Form1 : Form
+    {
+        IWebDriver B;
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            B = new OpenQA.Selenium.Chrome.ChromeDriver();
+            B.Manage().Window.Maximize();
+
+            B.Navigate().GoToUrl("http://www.google.com");
+
+            IWebElement S = B.FindElement(By.Id("lst-ib"));
+            S.SendKeys("Сколько лет прожил Курт Кобейн"+OpenQA.Selenium.Keys.Enter);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            B.Quit();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            IWebElement element;
+            //element= B.FindElement(By.Id("lst-ib"));
+            //element.SendKeys("text" + OpenQA.Selenium.Keys.Enter);
+
+            //element = B.FindElement(By.ClassName("weather"));
+            //element.Click();
+
+            // element = B.FindElement(By.LinkText("Картинки"));
+            //element.Click();
+
+            element = B.FindElement(By.PartialLinkText("водчик"));
+            element.Click();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            B = new OpenQA.Selenium.Chrome.ChromeDriver();
+            B.Manage().Window.Maximize();
+
+            B.Navigate().GoToUrl("http://www.yandex.ru");
+
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            List<IWebElement> New=B.FindElements(By.CssSelector("#tabnews_newsc a")).ToList();
+            for(int i = 0; i < New.Count; i++)
+            {
+                textBox1.AppendText(New[i].Text+"\r\n");
+            }
+
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            List<IWebElement> New = B.FindElements(By.CssSelector("#tabnews_newsc a")).ToList();
+            for (int i = 0; i < New.Count; i++)
+            {
+                String s = New[i].Text;
+                if (s.StartsWith("США"))
+                {
+                    textBox1.AppendText("Новочти №" + (i + 1).ToString()+ "начинается с текста 'ФСБ'"+"\r\n");
+                }
+
+
+                if (s.EndsWith("России"))
+                {
+                    textBox1.AppendText("Новочти №" + (i + 1).ToString() + "заканчиивается текстом 'России'" + "\r\n");
+                }
+
+                if (s.Contains("задержали"))
+                {
+                    textBox1.AppendText("Новочти №" + (i + 1).ToString() + "содержит текст 'задержали'" + "\r\n");
+                }
+
+
+            }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            IJavaScriptExecutor jse = B as IJavaScriptExecutor;
+            jse.ExecuteScript(textBox1.Text);
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            B.SwitchTo().Window(B.WindowHandles[0]);
+            System.Windows.Forms.MessageBox.Show((1).ToString()+ "."+B.Title + "\r\n" + B.Url);
+
+            B.SwitchTo().Window(B.WindowHandles[2]);
+            System.Windows.Forms.MessageBox.Show((2).ToString()+ "."+B.Title + "\r\n" + B.Url  );
+
+            B.SwitchTo().Window(B.WindowHandles[1]);
+            System.Windows.Forms.MessageBox.Show((3).ToString()+ "."+B.Title + "\r\n" + B.Url  );
+        }
+    }
+}
